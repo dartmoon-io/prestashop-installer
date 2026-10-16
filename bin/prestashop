@@ -1,0 +1,16 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+// Composer's bin proxy supplies this path for local and global installations.
+$autoload = $_composer_autoload_path ?? dirname(__DIR__) . '/vendor/autoload.php';
+if (!is_file($autoload)) {
+    fwrite(STDERR, "Install dependencies first with composer install.\n");
+    exit(1);
+}
+require $autoload;
+
+$application = new Symfony\Component\Console\Application('PrestaShop Installer', '1.0.0');
+$application->add(new Dartmoon\PrestaShopInstaller\CreateModuleCommand());
+exit($application->run());

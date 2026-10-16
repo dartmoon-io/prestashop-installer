@@ -1,0 +1,26 @@
+name: Installer tests
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.2', '8.3', '8.4', '8.5']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: prestashop-installer
+      - uses: actions/checkout@v4
+        with:
+          repository: dartmoon-io/prestashop-module
+          path: prestashop-module
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+      - run: composer validate --strict
+        working-directory: prestashop-installer
+      - run: composer install --no-interaction --prefer-dist
+        working-directory: prestashop-installer
+      - run: composer test
+        working-directory: prestashop-installer
