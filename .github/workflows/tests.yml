@@ -1,3 +1,6 @@
+# Copyright (c) 2023-2026 Dartmoon S.r.l. <hello@dartmoon.io>
+# SPDX-License-Identifier: MIT
+# See LICENSE for the full license text.
 name: Installer tests
 on: [push, pull_request, workflow_dispatch]
 jobs:
@@ -14,6 +17,10 @@ jobs:
         with:
           repository: dartmoon-io/prestashop-module
           path: prestashop-module
+      - uses: actions/checkout@v4
+        with:
+          repository: dartmoon-io/prestashop-module-toolkit
+          path: prestashop-module-toolkit
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
@@ -22,5 +29,5 @@ jobs:
         working-directory: prestashop-installer
       - run: composer install --no-interaction --prefer-dist
         working-directory: prestashop-installer
-      - run: composer test
+      - run: composer verify
         working-directory: prestashop-installer

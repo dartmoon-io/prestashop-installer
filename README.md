@@ -127,3 +127,17 @@ See the [boilerplate documentation](https://github.com/dartmoon-io/prestashop-mo
 for module development, builds and shop installation, and the
 [toolkit documentation](https://github.com/dartmoon-io/prestashop-module-toolkit/tree/main/docs)
 for the shared libraries.
+
+## Quality and local ecosystem verification
+
+Run `composer quality` to check official PrestaShop PHP formatting,
+`composer quality:fix` to apply it, and `composer verify` for formatting plus tests.
+These tools are development dependencies and do not enter a generated module.
+Tests use the sibling boilerplate or `TEMPLATE_PATH`. Download/process mocks
+verify orchestration only; a real local template/toolkit run must also be tested.
+
+After creation run `composer quality:fix` to format generated metadata. The
+module keeps its runtime dependencies in the root and build dependencies in
+`tools/`; install both before building. See the boilerplate's release policy for
+`composer headers`, Vite and the complete `composer verify` workflow. Set
+`TOOLKIT_PATH` for pipeline regression tests when working outside sibling checkouts.

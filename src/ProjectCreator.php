@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Copyright (c) 2023-2026 Dartmoon S.r.l. <hello@dartmoon.io>
+ * SPDX-License-Identifier: MIT
+ * See LICENSE for the full license text.
+ */
+
 declare(strict_types=1);
 
 namespace Dartmoon\PrestaShopInstaller;
@@ -80,12 +86,7 @@ class ProjectCreator
                 $this->runner->run(array_merge($this->composer(), ['install', '--working-dir=tools', '--prefer-dist', '--no-interaction']), $directory, $output);
             }
         } catch (\Throwable $exception) {
-            throw new \RuntimeException(
-                'Module creation failed: ' . $exception->getMessage()
-                . (is_dir($directory) ? "\nThe new directory is retained for inspection: " . $directory : ''),
-                0,
-                $exception
-            );
+            throw new \RuntimeException('Module creation failed: ' . $exception->getMessage() . (is_dir($directory) ? "\nThe new directory is retained for inspection: " . $directory : ''), 0, $exception);
         }
 
         return $directory;

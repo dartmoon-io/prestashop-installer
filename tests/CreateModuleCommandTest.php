@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Copyright (c) 2023-2026 Dartmoon S.r.l. <hello@dartmoon.io>
+ * SPDX-License-Identifier: MIT
+ * See LICENSE for the full license text.
+ */
+
 declare(strict_types=1);
 
 namespace Dartmoon\PrestaShopInstaller\Tests;
@@ -71,6 +77,20 @@ final class CreateModuleCommandTest extends TestCase
         self::assertStringContainsString('mymodule:hello', file_get_contents($root . '/app/Commands/ExampleCommand.php'));
     }
 
+    public function testLocalToolkitRepositoryAndServiceDefinitionsAreConfigured(): void
+    {
+        $toolkit = realpath(getenv('TOOLKIT_PATH') ?: dirname(__DIR__, 2) . '/prestashop-module-toolkit');
+        self::assertNotFalse($toolkit);
+        $tester = $this->execute(['--toolkit-path' => $toolkit, '--namespace' => 'Acme\\ScopedModule']);
+        self::assertSame(0, $tester->getStatusCode(), $tester->getDisplay());
+        $manifest = json_decode(file_get_contents($this->temp . '/mymodule/composer.json'), true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame($toolkit, $manifest['repositories'][0]['url']);
+        self::assertFalse($manifest['repositories'][0]['options']['symlink']);
+        self::assertStringContainsString('Acme\\ScopedModule\\Filters\\Greeting', file_get_contents($this->temp . '/mymodule/config/services.php'));
+        $config = require $this->temp . '/mymodule/config/module.php';
+        self::assertSame(['min' => '9.2.0', 'max' => '9.2.0'], $config['compatibility']);
+    }
+
     public function testExistingDirectoryIsNeverOverwritten(): void
     {
         $this->filesystem->mkdir($this->temp . '/mymodule');
@@ -137,11 +157,13 @@ final class CreateModuleCommandTest extends TestCase
     {
         $runner = new class extends ProcessRunner {
             public array $commands = [];
+
             public function run(array $command, string $directory, OutputInterface $output, bool $interactive = false): void
             {
                 $this->commands[] = $command;
                 if (in_array('setup', $command, true)) {
                     parent::run($command, $directory, $output, $interactive);
+
                     return;
                 }
                 throw new \RuntimeException('Expected Composer failure');
@@ -158,7 +180,11 @@ final class CreateModuleCommandTest extends TestCase
         $template = $this->template;
         $runner = new class($template) extends ProcessRunner {
             public array $commands = [];
-            public function __construct(private string $template) {}
+
+            public function __construct(private string $template)
+            {
+            }
+
             public function run(array $command, string $directory, OutputInterface $output, bool $interactive = false): void
             {
                 $this->commands[] = $command;

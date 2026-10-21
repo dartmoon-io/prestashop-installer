@@ -1,6 +1,12 @@
 #!/usr/bin/env php
 <?php
 
+/**
+ * Copyright (c) 2023-2026 Dartmoon S.r.l. <hello@dartmoon.io>
+ * SPDX-License-Identifier: MIT
+ * See LICENSE for the full license text.
+ */
+
 declare(strict_types=1);
 
 // Composer's bin proxy supplies this path for local and global installations.

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Copyright (c) 2023-2026 Dartmoon S.r.l. <hello@dartmoon.io>
+ * SPDX-License-Identifier: MIT
+ * See LICENSE for the full license text.
+ */
+
 declare(strict_types=1);
 
 namespace Dartmoon\PrestaShopInstaller;
@@ -46,7 +52,7 @@ final class CreateModuleCommand extends Command
         $output->writeln('Created ' . \Symfony\Component\Console\Formatter\OutputFormatter::escape($directory));
         $output->writeln(($options['no-install'] ?? false)
             ? 'Next: run composer install and composer tools:install in the new module.'
-            : 'Next: develop your module, then run composer build in its directory.');
+            : 'Next: run composer quality:fix, develop your module, then run composer verify (set TEMPLATE_PATH and TOOLKIT_PATH for local regression tests).');
 
         return self::SUCCESS;
     }
