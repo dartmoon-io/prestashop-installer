@@ -73,8 +73,8 @@ final class CreateModuleCommandTest extends TestCase
         self::assertDirectoryDoesNotExist($root . '/.git');
         self::assertSame($before, hash_file('sha256', $this->template . '/composer.json'));
         $manifest = json_decode(file_get_contents($root . '/composer.json'), true, 512, JSON_THROW_ON_ERROR);
-        self::assertSame(['Acme\\MyModule\\' => 'app/'], $manifest['autoload']['psr-4']);
-        self::assertStringContainsString('mymodule:hello', file_get_contents($root . '/app/Commands/ExampleCommand.php'));
+        self::assertSame(['Acme\\MyModule\\' => 'src/'], $manifest['autoload']['psr-4']);
+        self::assertStringContainsString('mymodule:hello', file_get_contents($root . '/src/Commands/ExampleCommand.php'));
     }
 
     public function testLocalToolkitRepositoryAndServiceDefinitionsAreConfigured(): void
